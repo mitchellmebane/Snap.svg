@@ -127,9 +127,10 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 }
             },
             cb = 0,
+            thisSet = this,
             callbacker = callback && function () {
-                if (cb++ == this.length) {
-                    callback.call(this);
+                if (++cb == thisSet.length) {
+                    callback.call(thisSet);
                 }
             };
         return this.forEach(function (el, i) {
