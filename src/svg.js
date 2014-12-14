@@ -225,7 +225,8 @@ function repush(array, item) {
         return array.push(array.splice(i, 1)[0]);
     }
 }
-function cacher(f, scope, postprocessor) {
+function cacher(f, scope, postprocessor, maxSize) {
+    maxSize = maxSize || 1e3;
     function newf() {
         var arg = Array.prototype.slice.call(arguments, 0),
             args = arg.join("\u2400"),
@@ -235,7 +236,7 @@ function cacher(f, scope, postprocessor) {
             repush(count, args);
             return postprocessor ? postprocessor(cache[args]) : cache[args];
         }
-        count.length >= 1e3 && delete cache[count.shift()];
+        count.length >= maxSize && delete cache[count.shift()];
         count.push(args);
         cache[args] = f.apply(scope, arg);
         return postprocessor ? postprocessor(cache[args]) : cache[args];

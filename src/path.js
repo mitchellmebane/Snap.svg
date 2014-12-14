@@ -144,7 +144,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             subpaths.end = sp;
             point = istotal ? len : subpath ? subpaths : findDotsAtSegment(x, y, p[0], p[1], p[2], p[3], p[4], p[5], 1);
             return point;
-        }, null, Snap._.clone);
+        }, null, Snap._.clone, 10);
     }
     var getTotalLength = getLengthFactory(1),
         getPointAtLength = getLengthFactory(),
