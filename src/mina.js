@@ -76,6 +76,7 @@ var mina = (function (eve) {
         delete animations[a.id];
         a.update();
         eve("mina.stop." + a.id, a);
+        a.finalize();
     },
     pause = function () {
         var a = this;
@@ -124,12 +125,17 @@ var mina = (function (eve) {
                 (function (a) {
                     setTimeout(function () {
                         eve("mina.finish." + a.id, a);
+                        a.finalize();
                     });
                 }(a));
             }
             a.update();
         }
         len && requestAnimFrame(frame);
+    },
+    finalize = function() {
+        delete eve._events.n.mina.n.finish.n[this.id];
+        delete eve._events.n.mina.n.stop.n[this.id];
     },
     /*\
      * mina
@@ -181,6 +187,7 @@ var mina = (function (eve) {
             speed: speed,
             duration: duration,
             stop: stopit,
+            finalize: finalize,
             pause: pause,
             resume: resume,
             update: update
