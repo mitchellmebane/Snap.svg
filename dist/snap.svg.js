@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-// build: 2014-06-03
+// build: 2014-12-13
 // Copyright (c) 2013 Adobe Systems Incorporated. All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -510,6 +510,7 @@ var mina = (function (eve) {
         delete animations[a.id];
         a.update();
         eve("mina.stop." + a.id, a);
+        a.finalize();
     },
     pause = function () {
         var a = this;
@@ -558,12 +559,17 @@ var mina = (function (eve) {
                 (function (a) {
                     setTimeout(function () {
                         eve("mina.finish." + a.id, a);
+                        a.finalize();
                     });
                 }(a));
             }
             a.update();
         }
         len && requestAnimFrame(frame);
+    },
+    finalize = function() {
+        delete eve._events.n.mina.n.finish.n[this.id];
+        delete eve._events.n.mina.n.stop.n[this.id];
     },
     /*\
      * mina
@@ -615,6 +621,7 @@ var mina = (function (eve) {
             speed: speed,
             duration: duration,
             stop: stopit,
+            finalize: finalize,
             pause: pause,
             resume: resume,
             update: update
@@ -6480,9 +6487,10 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
                 }
             },
             cb = 0,
+            thisSet = this,
             callbacker = callback && function () {
-                if (cb++ == this.length) {
-                    callback.call(this);
+                if (++cb == thisSet.length) {
+                    callback.call(thisSet);
                 }
             };
         return this.forEach(function (el, i) {
